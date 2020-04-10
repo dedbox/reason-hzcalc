@@ -11,8 +11,3 @@
  (libraries bdcalc)
  (modes (best exe) js)
  (modules Repl))
-
-(test
- (name tests)
- (libraries alcotest bdcalc)
- (modules Tests))
