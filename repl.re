@@ -11,7 +11,7 @@ open Re.Str;
 
 let read = (str, ctx) => {
   switch (parse_expr(str)) {
-  | Some(e) => ctx |> inferType(e)
+  | Some(e) => ctx |> synthesize(e)
   | None => None
   };
 };
@@ -31,7 +31,7 @@ let top_parse = (s, ctx) => {
     );
     switch (parse_expr(e_str), parse_type(t_str)) {
     | (Some(e), Some(t)) =>
-      switch (ctx |> checkType(e, t)) {
+      switch (ctx |> analyze(e, t)) {
       | Some(_) => Let(x, t)
       | None => Error
       }
