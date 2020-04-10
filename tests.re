@@ -1,4 +1,4 @@
-open Bdcalc.Ast.HExpr;
+open Bdcalc.Ast.HExp;
 open Bdcalc.Syntax;
 
 /******************************************************************************/
@@ -9,16 +9,16 @@ let test_parse_type_failure = () =>
   Alcotest.(check(bool))(
     "parse_type failure",
     true,
-    parse_type("123") == None,
+    parse_type("!!!") == None,
   );
 
-/* TBool */
+/* TNum */
 
-let test_parse_type_bool = () =>
+let test_parse_type_num = () =>
   Alcotest.(check(bool))(
-    "parse_type bool",
+    "parse_type num",
     true,
-    parse_type("Bool") == Some(TBool),
+    parse_type("num") == Some(TNum),
   );
 
 /* TFun */
@@ -27,31 +27,37 @@ let test_parse_type_arrow = () =>
   Alcotest.(check(bool))(
     "parse_type arrow",
     true,
-    parse_type("Bool -> Bool") == Some(TFun(TBool, TBool)),
+    parse_type("num -> num") == Some(TFun(TNum, TNum)),
   );
 
 let test_parse_type_arrows = () =>
   Alcotest.(check(bool))(
     "parse_type arrows",
     true,
-    parse_type("Bool -> Bool -> Bool")
-    == Some(TFun(TBool, TFun(TBool, TBool))),
+    parse_type("num -> num -> num") == Some(TFun(TNum, TFun(TNum, TNum))),
   );
 
 let test_parse_type_arrows_left = () =>
   Alcotest.(check(bool))(
     "parse_type arrows left",
     true,
-    parse_type("(Bool -> Bool) -> Bool")
-    == Some(TFun(TFun(TBool, TBool), TBool)),
+    parse_type("(num -> num) -> num") == Some(TFun(TFun(TNum, TNum), TNum)),
   );
 
 let test_parse_type_arrows_right = () =>
   Alcotest.(check(bool))(
     "parse_type arrows right",
     true,
-    parse_type("Bool -> (Bool -> Bool)")
-    == Some(TFun(TBool, TFun(TBool, TBool))),
+    parse_type("num -> (num -> num)") == Some(TFun(TNum, TFun(TNum, TNum))),
+  );
+
+/* THol */
+
+let test_parse_type_hole = () =>
+  Alcotest.(check(bool))(
+    "parse_type hole",
+    true,
+    parse_type("[]") == Some(THol),
   );
 
 /******************************************************************************/
@@ -62,7 +68,7 @@ let test_parse_expr_failure = () =>
   Alcotest.(check(bool))(
     "parse_expr failure",
     true,
-    parse_expr("123") == None,
+    parse_expr("!!!") == None,
   );
 
 /* Var */
@@ -72,6 +78,37 @@ let test_parse_expr_var = () =>
     "parse_expr var",
     true,
     parse_expr("x") == Some(Var("x")),
+  );
+
+/* Fun */
+
+let test_parse_expr_fun = () =>
+  Alcotest.(check(bool))(
+    "parse_expr fun",
+    true,
+    parse_expr("\\x.x") == Some(Fun("x", Var("x"))),
+  );
+
+let test_parse_expr_fun_app = () =>
+  Alcotest.(check(bool))(
+    "parse_expr fun app",
+    true,
+    parse_expr("\\x.x x") == Some(Fun("x", App(Var("x"), Var("x")))),
+  );
+
+let test_parse_expr_funs = () =>
+  Alcotest.(check(bool))(
+    "parse_expr funs",
+    true,
+    parse_expr("\\x.\\y.x") == Some(Fun("x", Fun("y", Var("x")))),
+  );
+
+let test_parse_expr_funs_app = () =>
+  Alcotest.(check(bool))(
+    "parse_expr funs app",
+    true,
+    parse_expr("\\f.\\x.f x")
+    == Some(Fun("f", Fun("x", App(Var("f"), Var("x"))))),
   );
 
 /* App */
@@ -106,80 +143,101 @@ let test_parse_expr_apps_right = () =>
     == Some(App(Var("f"), App(Var("x"), Var("y")))),
   );
 
-/* Fun */
+/* Num */
 
-let test_parse_expr_fun = () =>
+let test_parse_expr_num_zero = () =>
   Alcotest.(check(bool))(
-    "parse_expr fun",
+    "parse_expr num zero",
     true,
-    parse_expr("\\x.x") == Some(Fun("x", Var("x"))),
+    parse_expr("0") == Some(Num(0)),
   );
 
-let test_parse_expr_fun_app = () =>
+let test_parse_expr_num_positive = () =>
   Alcotest.(check(bool))(
-    "parse_expr fun app",
+    "parse_expr num positive",
     true,
-    parse_expr("\\x.x x") == Some(Fun("x", App(Var("x"), Var("x")))),
+    parse_expr("123") == Some(Num(123)),
   );
 
-let test_parse_expr_funs = () =>
+let test_parse_expr_num_negative = () =>
   Alcotest.(check(bool))(
-    "parse_expr funs",
+    "parse_expr num negative",
     true,
-    parse_expr("\\x.\\y.x") == Some(Fun("x", Fun("y", Var("x")))),
+    parse_expr("-456") == Some(Num(-456)),
   );
 
-let test_parse_expr_funs_app = () =>
+/* Add */
+
+let test_parse_expr_add = () =>
   Alcotest.(check(bool))(
-    "parse_expr funs app",
+    "parse_expr add",
     true,
-    parse_expr("\\f.\\x.f x")
-    == Some(Fun("f", Fun("x", App(Var("f"), Var("x"))))),
+    parse_expr("1 + 2") == Some(Add(Num(1), Num(2))),
   );
 
-let test_parse_expr_true = () =>
+let test_parse_expr_adds = () =>
   Alcotest.(check(bool))(
-    "parse_expr true",
+    "parse_expr adds",
     true,
-    parse_expr("true") == Some(Tru),
+    parse_expr("1 + 2 + 3") == Some(Add(Num(1), Add(Num(2), Num(3)))),
   );
 
-let test_parse_expr_false = () =>
+let test_parse_expr_adds_left = () =>
   Alcotest.(check(bool))(
-    "parse_expr false",
+    "parse_expr adds",
     true,
-    parse_expr("false") == Some(Fls),
+    parse_expr("(1 + 2) + 3") == Some(Add(Add(Num(1), Num(2)), Num(3))),
   );
 
-let test_parse_expr_if = () =>
+let test_parse_expr_adds_right = () =>
   Alcotest.(check(bool))(
-    "parse_expr if",
+    "parse_expr adds right",
     true,
-    parse_expr("if true false true") == Some(If(Tru, Fls, Tru)),
+    parse_expr("1 + (2 + 3)") == Some(Add(Num(1), Add(Num(2), Num(3)))),
   );
+
+/* Ann */
 
 let test_parse_expr_ann_var = () =>
   Alcotest.(check(bool))(
     "parse_expr annotate var",
     true,
-    parse_expr("x : Bool") == Some(Ann(Var("x"), TBool)),
+    parse_expr("x : num") == Some(Ann(Var("x"), TNum)),
   );
 
 let test_parse_expr_ann_fun = () =>
   Alcotest.(check(bool))(
     "parse_expr annotate fun",
     true,
-    parse_expr("(\\x.x) : Bool -> Bool")
-    == Some(Ann(Fun("x", Var("x")), TFun(TBool, TBool))),
+    parse_expr("(\\x.x) : num -> num")
+    == Some(Ann(Fun("x", Var("x")), TFun(TNum, TNum))),
   );
 
 let test_parse_expr_ann_in_fun = () =>
   Alcotest.(check(bool))(
     "parse_expr annotate in fun",
     true,
-    parse_expr("\\f.f : Bool -> Bool")
-    == Some(Fun("f", Ann(Var("f"), TFun(TBool, TBool)))),
+    parse_expr("\\f.f : num -> num")
+    == Some(Fun("f", Ann(Var("f"), TFun(TNum, TNum)))),
   );
+
+/* Hol */
+
+let test_parse_expr_hole_empty = () =>
+  Alcotest.(check(bool))(
+    "parse_expr hole empty",
+    true,
+    parse_expr("[]") == Some(Hol(None)),
+  );
+
+let test_parse_expr_hole_full = () =>
+  Alcotest.(check(bool))(
+    "parse_expr hole full",
+    true,
+    parse_expr("[1]") == Some(Hol(Some(Num(1)))),
+  );
+
+/******************************************************************************/
 
 let () =
   Alcotest.(
@@ -190,11 +248,12 @@ let () =
           "parse_type",
           [
             test_case("failure", `Quick, test_parse_type_failure),
-            test_case("bool", `Quick, test_parse_type_bool),
+            test_case("num", `Quick, test_parse_type_num),
             test_case("arrow", `Quick, test_parse_type_arrow),
             test_case("arrows", `Quick, test_parse_type_arrows),
             test_case("arrows left", `Quick, test_parse_type_arrows_left),
             test_case("arrows right", `Quick, test_parse_type_arrows_right),
+            test_case("hole", `Quick, test_parse_type_hole),
           ],
         ),
         (
@@ -202,20 +261,26 @@ let () =
           [
             test_case("failure", `Quick, test_parse_expr_failure),
             test_case("var", `Quick, test_parse_expr_var),
-            test_case("app", `Quick, test_parse_expr_app),
-            test_case("apps", `Quick, test_parse_expr_apps),
-            test_case("apps left", `Quick, test_parse_expr_apps_left),
-            test_case("apps right", `Quick, test_parse_expr_apps_right),
             test_case("fun", `Quick, test_parse_expr_fun),
             test_case("fun app", `Quick, test_parse_expr_fun_app),
             test_case("funs", `Quick, test_parse_expr_funs),
             test_case("funs app", `Quick, test_parse_expr_funs_app),
-            test_case("true", `Quick, test_parse_expr_true),
-            test_case("false", `Quick, test_parse_expr_false),
-            test_case("if", `Quick, test_parse_expr_if),
+            test_case("app", `Quick, test_parse_expr_app),
+            test_case("apps", `Quick, test_parse_expr_apps),
+            test_case("apps left", `Quick, test_parse_expr_apps_left),
+            test_case("apps right", `Quick, test_parse_expr_apps_right),
+            test_case("num zero", `Quick, test_parse_expr_num_zero),
+            test_case("num positive", `Quick, test_parse_expr_num_positive),
+            test_case("num negative", `Quick, test_parse_expr_num_negative),
+            test_case("add", `Quick, test_parse_expr_add),
+            test_case("adds", `Quick, test_parse_expr_adds),
+            test_case("adds left", `Quick, test_parse_expr_adds_left),
+            test_case("adds right", `Quick, test_parse_expr_adds_right),
             test_case("annotate var", `Quick, test_parse_expr_ann_var),
             test_case("annotate fun", `Quick, test_parse_expr_ann_fun),
             test_case("annotate in fun", `Quick, test_parse_expr_ann_in_fun),
+            test_case("hole empty", `Quick, test_parse_expr_hole_empty),
+            test_case("hole full", `Quick, test_parse_expr_hole_full),
           ],
         ),
       ],

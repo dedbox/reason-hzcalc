@@ -6,22 +6,24 @@
 }
 
 let spc = [' ' '\t']+
+let num = '-'? ['0'-'9']+
 let sym = ['a'-'z']+
 let endl = '\r' | '\n' | "\r\n"
 
 rule read = parse
   | spc       { read lexbuf }
   | endl      { Lexing.new_line lexbuf; read lexbuf }
+  | "num"     { NUM }
   | "->"      { ARROW }
   | ":"       { COLON }
-  | "Bool"    { BOOL }
   | "("       { LPAREN }
   | ")"       { RPAREN }
+  | "["       { LBRACKET }
+  | "]"       { RBRACKET }
   | "\\"      { SLASH }
   | "."       { DOT }
-  | "true"    { TRUE }
-  | "false"   { FALSE }
-  | "if"      { IF }
-  | sym as x  { SYM x }
+  | "+"       { PLUS }
+  | num as n  { NUMBER (int_of_string n) }
+  | sym as x  { SYMBOL x }
   | eof       { EOF }
-  | _  { raise (Error ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
+  | _         { raise (Error ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }

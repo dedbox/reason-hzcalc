@@ -2,19 +2,20 @@
 /* Abstract Syntax Trees                                                      */
 /******************************************************************************/
 
-module HType = {
+module HTyp = {
   type t =
-    | TBool
-    | TFun(t, t);
+    | TFun(t, t)
+    | TNum
+    | THol;
 };
 
-module HExpr = {
+module HExp = {
   type t =
     | Var(string)
-    | App(t, t)
     | Fun(string, t)
-    | Tru
-    | Fls
-    | If(t, t, t)
-    | Ann(t, HType.t);
+    | App(t, t)
+    | Num(int)
+    | Add(t, t)
+    | Ann(t, HTyp.t)
+    | Hol(option(t));
 };

@@ -1,47 +1,49 @@
-%token <string> SYM
-%token ARROW COLON
-%token BOOL
+%token <int> NUMBER
+%token <string> SYMBOL
+%token ARROW COLON LBRACKET RBRACKET
 %token LPAREN RPAREN SLASH DOT
-%token TRUE FALSE IF
+%token NUM PLUS
 %token EOF
 
 %right ARROW
 
-%start <Ast.HExpr.t> top
-%start <Ast.HType.t> typ_top
+%start <Ast.HExp.t> top
+%start <Ast.HTyp.t> typ_top
 
 %{
 
-    open Ast.HExpr;;
-    open Ast.HType;;
+    open Ast.HExp;;
+    open Ast.HTyp;;
 
 %}
 
 %%
 
 top:
-  | e=expr EOF  { e }
+  | e=exp EOF  { e }
 
 typ_top:
   | t=typ EOF  { t }
 
-expr:
-  | SLASH x=SYM DOT e=expr      { Fun(x, e) }
-  | IF e1=atom e2=atom e3=atom  { If(e1, e2, e3) }
-  | appexpr                     { $1 }
+exp:
+  | SLASH x=SYMBOL DOT e=exp  { Fun(x, e) }
+  | e1=appexp PLUS e2=exp     { Add(e1, e2) }
+  | LBRACKET RBRACKET         { Hol(None) }
+  | LBRACKET e=exp RBRACKET   { Hol(Some(e)) }
+  | appexp                    { $1 }
 
-appexpr:
-  | e1=appexpr e2=atom  { App(e1, e2) }
-  | atom                { $1 }
+appexp:
+  | e1=appexp e2=atom  { App(e1, e2) }
+  | atom               { $1 }
 
 atom:
-  | e=atom COLON t=typ  { Ann(e, t) }
-  | x=SYM               { Var(x) }
-  | TRUE                { Tru }
-  | FALSE               { Fls }
-  | LPAREN expr RPAREN  { $2 }
+  | e=atom COLON t=typ    { Ann(e, t) }
+  | x=SYMBOL              { Var(x) }
+  | n=NUMBER              { Num(n) }
+  | LPAREN exp RPAREN     { $2 }
 
 typ:
-  | BOOL                 { TBool }
+  | NUM                  { TNum }
   | t1=typ ARROW t2=typ  { TFun(t1, t2) }
+  | LBRACKET RBRACKET    { THol }
   | LPAREN typ RPAREN    { $2 }

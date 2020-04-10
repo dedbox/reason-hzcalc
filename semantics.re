@@ -2,8 +2,8 @@
 /* Static Semantics                                                           */
 /******************************************************************************/
 
-open Ast.HExpr;
-open Ast.HType;
+open Ast.HExp;
+open Ast.HTyp;
 
 /******************************************************************************/
 /* Typing Contexts                                                            */
@@ -27,8 +27,12 @@ let extend = (x, t, ctx) => ctx |> StringMap.add(x, t);
 let rec inferType = (e, ctx) =>
   switch (e) {
   | Var(x) => ctx |> lookup(x)
-  | Tru
-  | Fls => Some(TBool)
+  | Num(_) => Some(TNum)
+  | Add(e1, e2) =>
+    switch (ctx |> checkType(e1, TNum), ctx |> checkType(e2, TNum)) {
+    | (Some(_), Some(_)) => Some(TNum)
+    | _ => None
+    }
   | Ann(e, t) => ctx |> checkType(e, t)
   | App(e1, e2) =>
     switch (ctx |> inferType(e1)) {
@@ -51,15 +55,6 @@ and checkType = (e, t, ctx) =>
       | Some(_) => Some(t)
       | _ => None
       }
-    | _ => None
-    }
-  | If(e1, e2, e3) =>
-    switch (
-      ctx |> checkType(e1, TBool),
-      ctx |> checkType(e2, t),
-      ctx |> checkType(e3, t),
-    ) {
-    | (Some(_), Some(_), Some(_)) => Some(t)
     | _ => None
     }
   | _ => ctx |> inferType(e) == Some(t) ? Some(t) : None

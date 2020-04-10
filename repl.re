@@ -17,7 +17,7 @@ let read = (str, ctx) => {
 };
 
 type command =
-  | Let(string, HType.t)
+  | Let(string, HTyp.t)
   | Error
   | Pass;
 
