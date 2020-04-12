@@ -1,7 +1,7 @@
 (library
  (name bdcalc)
  (libraries camomile re)
- (modules Ast Lexer Parser Semantics Syntax))
+ (modules Ast Context Lexer Parser Semantics Syntax))
 
 (ocamllex (modules lexer))
 (menhir (modules parser))

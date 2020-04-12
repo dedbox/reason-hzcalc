@@ -4,21 +4,7 @@
 
 open Ast.HExp;
 open Ast.HTyp;
-
-/******************************************************************************/
-/* Typing Contexts                                                            */
-/******************************************************************************/
-
-module StringMap =
-  Map.Make({
-    type t = string;
-    let compare = compare;
-  });
-
-let lookup = (x, ctx) =>
-  ctx |> StringMap.mem(x) ? Some(ctx |> StringMap.find(x)) : None;
-
-let extend = (x, t, ctx) => ctx |> StringMap.add(x, t);
+open Context;
 
 /******************************************************************************/
 /* Bidirectional Type Checking                                                */

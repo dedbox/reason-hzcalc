@@ -3,6 +3,7 @@
 /******************************************************************************/
 
 open Bdcalc.Ast;
+open Bdcalc.Context;
 open Bdcalc.Semantics;
 open Bdcalc.Syntax;
 
@@ -59,4 +60,4 @@ let rec repl = ctx => {
   };
 };
 
-repl(StringMap.empty);
+repl(Context.empty);
