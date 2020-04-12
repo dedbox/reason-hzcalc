@@ -59,7 +59,7 @@ let rec pp_expr = (fmt, e) =>
   | Fun(x, e1) => fprintf(fmt, "\\%s.%a", x, pp_expr, e1)
   | App(e1, e2) => fprintf(fmt, "%a %a", app_pp_expr, e1, sub_pp_expr, e2)
   | Num(n) => fprintf(fmt, "%d", n)
-  | Add(e1, e2) => fprintf(fmt, "%a + %a", app_pp_expr, e1, app_pp_expr, e2)
+  | Add(e1, e2) => fprintf(fmt, "%a + %a", app_pp_expr, e1, sub_pp_expr, e2)
   | Ann(e1, t2) => fprintf(fmt, "%a : %a", sub_pp_expr, e1, pp_type, t2)
   | Hol(None) => fprintf(fmt, "[]")
   | Hol(Some(e1)) => fprintf(fmt, "[%a]", pp_expr, e1)
@@ -70,6 +70,7 @@ and app_pp_expr = (fmt, e) =>
   | Fun(_, _)
   | Ann(_, _) => sub_pp_expr(fmt, e)
   | App(e1, e2) => fprintf(fmt, "%a %a", app_pp_expr, e1, sub_pp_expr, e2)
+  | Add(e1, e2) => fprintf(fmt, "%a + %a", app_pp_expr, e1, sub_pp_expr, e2)
   | _ => pp_expr(fmt, e)
   }
 
@@ -77,6 +78,7 @@ and sub_pp_expr = (fmt, e) =>
   switch (e) {
   | Fun(_, _)
   | App(_, _)
+  | Add(_, _)
   | Ann(_, _) => fprintf(fmt, "(%a)", pp_expr, e)
   | _ => pp_expr(fmt, e)
   };
