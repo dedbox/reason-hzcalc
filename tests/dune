@@ -1,4 +1,4 @@
 (test
  (name tests)
  (libraries alcotest bdcalc)
- (modules Tests Syntax))
+ (modules Parser Tests))
