@@ -423,3 +423,11 @@ let test_analyze_hole_on_hole = () =>
     Some(THol),
     Context.empty |> analyze(Hol(Some(Hol(None))), THol),
   );
+
+let test_analyze_hole_on_fun = () =>
+  Alcotest.(check @@ option(htyp))(
+    "analyze hole on fun",
+    Some(TNum),
+    Context.(empty |> extend("f", TFun(TNum, TNum)))
+    |> analyze(Hol(Some(Var("f"))), TNum),
+  );

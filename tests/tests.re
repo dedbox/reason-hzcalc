@@ -157,6 +157,7 @@ let () =
             test_case("hole none", `Quick, test_analyze_hole_none),
             test_case("hole some", `Quick, test_analyze_hole_some),
             test_case("hole on hole", `Quick, test_analyze_hole_on_hole),
+            test_case("hole on fun", `Quick, test_analyze_hole_on_fun),
           ],
         ),
       ],
