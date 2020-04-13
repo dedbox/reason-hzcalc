@@ -4,6 +4,7 @@
 
 open Parser;
 open Printer;
+open Semantics;
 
 let () =
   Alcotest.(
@@ -83,6 +84,79 @@ let () =
             test_case("ascribe in fun", `Quick, test_pp_expr_asc_in_fun),
             test_case("hole empty", `Quick, test_pp_expr_hole_empty),
             test_case("hole full", `Quick, test_pp_expr_hole_full),
+          ],
+        ),
+        /* semantics */
+        (
+          "synthesize",
+          [
+            test_case("var fail", `Quick, test_synthesize_var_fail),
+            test_case("var", `Quick, test_synthesize_var),
+            test_case("app fail", `Quick, test_synthesize_app_fail),
+            test_case("app fun fail1", `Quick, test_synthesize_app_fun_fail1),
+            test_case("app fun fail2", `Quick, test_synthesize_app_fun_fail2),
+            test_case("app fun", `Quick, test_synthesize_app_fun),
+            test_case("app fun hole", `Quick, test_synthesize_app_fun_hole),
+            test_case("app fun holes", `Quick, test_synthesize_app_fun_holes),
+            test_case(
+              "app fun holes on hole",
+              `Quick,
+              test_synthesize_app_fun_holes_on_hole,
+            ),
+            test_case(
+              "app fun from hole",
+              `Quick,
+              test_synthesize_app_fun_from_hole,
+            ),
+            test_case(
+              "app fun to hole",
+              `Quick,
+              test_synthesize_app_fun_to_hole,
+            ),
+            test_case("app hole fail", `Quick, test_synthesize_app_hole_fail),
+            test_case("app hole", `Quick, test_synthesize_app_hole),
+            test_case("app holes", `Quick, test_synthesize_app_holes),
+            test_case("num", `Quick, test_synthesize_num),
+            test_case("add fail1", `Quick, test_synthesize_add_fail1),
+            test_case("add fail2", `Quick, test_synthesize_add_fail2),
+            test_case("add", `Quick, test_synthesize_add),
+            test_case("adds left", `Quick, test_synthesize_adds_left),
+            test_case("adds right", `Quick, test_synthesize_adds_right),
+            test_case("asc fail", `Quick, test_synthesize_asc),
+            test_case("asc", `Quick, test_synthesize_asc),
+            test_case("hole", `Quick, test_synthesize_hole),
+            test_case("hole var", `Quick, test_synthesize_hole_var),
+          ],
+        ),
+        (
+          "analyze",
+          [
+            test_case("var fail", `Quick, test_analyze_var_fail),
+            test_case("var hole", `Quick, test_analyze_var_hole),
+            test_case("app fail", `Quick, test_analyze_app_fail),
+            test_case("fun fail", `Quick, test_analyze_fun_fail),
+            test_case("fun", `Quick, test_analyze_fun),
+            test_case("fun hole", `Quick, test_analyze_fun_hole),
+            test_case("fun hole left", `Quick, test_analyze_fun_hole_left),
+            test_case("fun hole right", `Quick, test_analyze_fun_hole_right),
+            test_case("fun holes", `Quick, test_analyze_fun_holes),
+            test_case("funs left", `Quick, test_analyze_funs_left),
+            test_case("funs right", `Quick, test_analyze_funs_right),
+            test_case("num fail", `Quick, test_analyze_num_fail),
+            test_case("num", `Quick, test_analyze_num),
+            test_case("num hole", `Quick, test_analyze_num_hole),
+            test_case("add fail", `Quick, test_analyze_add_fail),
+            test_case("add", `Quick, test_analyze_add),
+            test_case("adds left", `Quick, test_analyze_adds_left),
+            test_case("adds right", `Quick, test_analyze_adds_right),
+            test_case("asc fail", `Quick, test_analyze_asc_fail),
+            test_case("asc", `Quick, test_analyze_asc),
+            test_case("asc hole", `Quick, test_analyze_asc_hole),
+            test_case("asc on hole", `Quick, test_analyze_asc_on_hole),
+            test_case("hole fail", `Quick, test_analyze_hole_fail),
+            test_case("hole none", `Quick, test_analyze_hole_none),
+            test_case("hole some", `Quick, test_analyze_hole_some),
+            test_case("hole on hole", `Quick, test_analyze_hole_on_hole),
           ],
         ),
       ],
