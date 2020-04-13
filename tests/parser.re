@@ -200,27 +200,27 @@ let test_parse_expr_adds_right = () =>
     Some(Add(Num(1), Add(Num(2), Num(3)))),
   );
 
-/* Ann */
+/* Asc */
 
-let test_parse_expr_ann_var = () =>
+let test_parse_expr_asc_var = () =>
   Alcotest.(check @@ option(hexp))(
-    "parse_expr annotate var",
+    "parse_expr ascribe var",
     parse_expr("x : num"),
-    Some(Ann(Var("x"), TNum)),
+    Some(Asc(Var("x"), TNum)),
   );
 
-let test_parse_expr_ann_fun = () =>
+let test_parse_expr_asc_fun = () =>
   Alcotest.(check @@ option(hexp))(
-    "parse_expr annotate fun",
+    "parse_expr ascribe fun",
     parse_expr("(\\x.x) : num -> num"),
-    Some(Ann(Fun("x", Var("x")), TFun(TNum, TNum))),
+    Some(Asc(Fun("x", Var("x")), TFun(TNum, TNum))),
   );
 
-let test_parse_expr_ann_in_fun = () =>
+let test_parse_expr_asc_in_fun = () =>
   Alcotest.(check @@ option(hexp))(
-    "parse_expr annotate in fun",
+    "parse_expr ascribe in fun",
     parse_expr("\\f.f : num -> num"),
-    Some(Fun("f", Ann(Var("f"), TFun(TNum, TNum)))),
+    Some(Fun("f", Asc(Var("f"), TFun(TNum, TNum)))),
   );
 
 /* Hol */

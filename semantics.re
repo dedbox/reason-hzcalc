@@ -50,7 +50,7 @@ let rec synthesize = (e, ctx) =>
     | (Some(_), Some(_)) => Some(TNum)
     | _ => None
     }
-  | Ann(e, t) => ctx |> analyze(e, t)
+  | Asc(e, t) => ctx |> analyze(e, t)
   | Hol(None) => Some(THol)
   | Hol(Some(e1)) =>
     switch (ctx |> synthesize(e1)) {

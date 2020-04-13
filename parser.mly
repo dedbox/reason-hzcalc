@@ -37,7 +37,7 @@ appexp:
   | atom               { $1 }
 
 atom:
-  | e=atom COLON t=typ    { Ann(e, t) }
+  | e=atom COLON t=typ    { Asc(e, t) }
   | x=SYMBOL              { Var(x) }
   | n=NUMBER              { Num(n) }
   | LPAREN exp RPAREN     { $2 }

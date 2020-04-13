@@ -163,26 +163,26 @@ let test_pp_expr_adds_right = () =>
     "1 + (2 + 3)",
   );
 
-/* Ann */
+/* Asc */
 
-let test_pp_expr_ann_var = () =>
+let test_pp_expr_asc_var = () =>
   Alcotest.(check(string))(
-    "pp_expr annotate var",
-    asprintf("%a", pp_expr, Ann(Var("x"), TNum)),
+    "pp_expr ascribe var",
+    asprintf("%a", pp_expr, Asc(Var("x"), TNum)),
     "x : num",
   );
 
-let test_pp_expr_ann_fun = () =>
+let test_pp_expr_asc_fun = () =>
   Alcotest.(check(string))(
-    "pp_expr annotate fun",
-    asprintf("%a", pp_expr, Ann(Fun("x", Var("x")), TFun(TNum, TNum))),
+    "pp_expr ascribe fun",
+    asprintf("%a", pp_expr, Asc(Fun("x", Var("x")), TFun(TNum, TNum))),
     "(\\x.x) : num -> num",
   );
 
-let test_pp_expr_ann_in_fun = () =>
+let test_pp_expr_asc_in_fun = () =>
   Alcotest.(check(string))(
-    "pp_expr annotate in fun",
-    asprintf("%a", pp_expr, Fun("f", Ann(Var("f"), TFun(TNum, TNum)))),
+    "pp_expr ascribe in fun",
+    asprintf("%a", pp_expr, Fun("f", Asc(Var("f"), TFun(TNum, TNum)))),
     "\\f.f : num -> num",
   );
 

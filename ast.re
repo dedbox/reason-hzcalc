@@ -16,6 +16,6 @@ module HExp = {
     | App(t, t)
     | Num(int)
     | Add(t, t)
-    | Ann(t, HTyp.t)
+    | Asc(t, HTyp.t)
     | Hol(option(t));
 };
