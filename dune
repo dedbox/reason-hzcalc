@@ -1,5 +1,5 @@
 (library
- (name bdcalc)
+ (name hzcalc)
  (libraries camomile re)
  (modules Ast Context Lexer Parser Semantics Syntax))
 

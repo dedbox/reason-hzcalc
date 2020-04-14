@@ -4,6 +4,8 @@
 
 open Ast.HExp;
 open Ast.HTyp;
+open Ast.ZExp;
+open Ast.ZTyp;
 
 open Format;
 

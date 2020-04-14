@@ -2,8 +2,8 @@
 /* Printer Unit Tests                                                         */
 /******************************************************************************/
 
-open Bdcalc.Ast.HTyp;
-open Bdcalc.Syntax;
+open Hzcalc.Ast.HTyp;
+open Hzcalc.Syntax;
 open Format;
 
 /******************************************************************************/

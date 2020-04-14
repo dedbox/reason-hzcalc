@@ -1,4 +1,4 @@
 (test
  (name tests)
- (libraries alcotest bdcalc)
+ (libraries alcotest hzcalc)
  (modules Parser Printer Semantics Tests))

@@ -2,10 +2,10 @@
 /* REPL                                                                       */
 /******************************************************************************/
 
-open Bdcalc.Ast;
-open Bdcalc.Context;
-open Bdcalc.Semantics;
-open Bdcalc.Syntax;
+open Hzcalc.Ast;
+open Hzcalc.Context;
+open Hzcalc.Semantics;
+open Hzcalc.Syntax;
 
 open Format;
 open Re.Str;

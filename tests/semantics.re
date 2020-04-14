@@ -2,10 +2,10 @@
 /* Static Semantics Unit Tests                                                */
 /******************************************************************************/
 
-open Bdcalc.Ast.HTyp;
-open Bdcalc.Context;
-open Bdcalc.Semantics;
-open Bdcalc.Syntax;
+open Hzcalc.Ast.HTyp;
+open Hzcalc.Context;
+open Hzcalc.Semantics;
+open Hzcalc.Syntax;
 
 /******************************************************************************/
 /* synthesize                                                                 */
